@@ -1,4 +1,4 @@
 // Write your tests here
-test('sanity', () => {
+it('sanity', () => {
   expect(true).toBe(false)
 })
