@@ -1,6 +1,6 @@
-const Users = require('../auth/users-model');
+const User = require('../auth/users-model');
 
-const checkPayloadExists = (req, res, next) => {
+const payloadExists = (req, res, next) => {
   if (!req.body.username || !req.body.password) {
     res.status(401).json('username and password required');
   } else {
@@ -8,35 +8,35 @@ const checkPayloadExists = (req, res, next) => {
   }
 };
 
-const checkUsernameUnique = async (req, res, next) => {
+const usernameUnique = async (req, res, next) => {
   try {
-    const rows = await Users.findBy({ username: req.body.username });
+    const rows = await User.findBy({ username: req.body.username });
     if (!rows.length) {
       next();
     } else {
       res.status(401).json('username taken');
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-const loginNameExists = async (req, res, next) => {
+const usernameExists = async (req, res, next) => {
   try {
-    const rows = await Users.findBy({ username: req.body.username });
+    const rows = await User.findBy({ username: req.body.username });
     if (rows.length) {
       req.userData = rows[0];
       next();
     } else {
       res.status(401).json('invalid credentials');
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 module.exports =  {
-  checkPayloadExists,
-  checkUsernameUnique,
-  loginNameExists
+  payloadExists,
+  usernameUnique,
+  usernameExists
 };
