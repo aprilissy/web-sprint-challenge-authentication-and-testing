@@ -34,7 +34,7 @@ describe('endpoints', () => {
       const res = await request(server).post('/api/auth/login').send(April);      
       expect(JSON.stringify(res.body)).toMatch(/welcome, April/);
     });
-    it('', async () => {
+    it('prevents logging in without username and password', async () => {
       const res = await request(server).post('/api/auth/login').send();
       expect(JSON.stringify(res.body)).toMatch(/username and password required/);
     });
@@ -45,9 +45,8 @@ describe('endpoints', () => {
      const res = await request(server).get('/api/jokes');
      expect(JSON.stringify(res.body)).toMatch(/token required/);
     });
-    it('', async () => {
+    it('allows access to dad jokes when authorization header includes valid token', async () => {
       await request(server).post('/api/auth/register').send(April);
-
       const user = await request(server).post('/api/auth/login').send(April); 
       const res = await request(server).get('/api/jokes').set('Authorization', `${user.body.token}`);
       expect(res.text).toMatch(/Because he had no guts/);
